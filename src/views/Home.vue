@@ -1,13 +1,23 @@
 <template>
   <div class="page-container black-page-container">
     <div class="home">
-      <h1>Namespaces</h1>
-      <div class="namespaces-container">
+      <h1 v-if="!adding">
+        Namespaces
+        <button class="btn" id="add-namespace" @click="toggleAdding">
+          <i class="fa fa-plus"></i>
+        </button>
+      </h1>
+      <form-namespace v-if="adding" @success="onNamespaceAdded">
+        <button class="btn btn-success" @click="toggleAdding">
+          Cancel
+        </button>
+      </form-namespace>
+      <div class="namespaces-container" v-if="!adding">
         <namespace
-          v-for="(n, i) in namespaces"
+          v-for="(n, i) in user.namespaces"
           :key="n._id"
           :name="n.name"
-          :panels="n.panels"
+          :panels="n.panels.length"
           :class="{'shown': i <= currentNamespaceIndex}"
         />
       </div>
@@ -19,6 +29,7 @@
   h1 {
     text-align: center;
     display: block;
+    position: relative;
   }
 
   .home {
@@ -34,58 +45,50 @@
   .namespaces-container {
     width: 25%;
   }
+
+  #add-namespace {
+    position: absolute;
+    width: auto;
+    top: 3px;
+    right: -60px;
+    border-radius: 100%;
+  }
 </style>
 
 <script>
+import {mapGetters} from 'vuex';
 import Namespace from '../components/Namespace.vue';
+import FormNamespace from '@/components/forms/FormNamespace';
 
 export default {
-  components: {Namespace},
+  components: {Namespace, FormNamespace},
   name: 'Home',
   data: () => ({
     currentNamespaceIndex: -2,
-    namespaces: [
-      {
-        _id: '1',
-        name: 'jorgeemanoel.com',
-        panels: 0,
-      },
-      {
-        _id: '2',
-        name: 'jorgeemanoel.com',
-        panels: 0,
-      },
-      {
-        _id: '3',
-        name: 'jorgeemanoel.com',
-        panels: 0,
-      },
-      {
-        _id: '4',
-        name: 'jorgeemanoel.com',
-        panels: 0,
-      },
-      {
-        _id: '5',
-        name: 'jorgeemanoel.com',
-        panels: 0,
-      },
-    ],
+    adding: false,
   }),
   mounted() {
-    this.getNamespaces();
+    this.animateNamespaces();
+  },
+  computed: {
+    ...mapGetters({user: 'getUser'}),
   },
   methods: {
-    getNamespaces() {
-      // ...
-      this.currentNamespaceIndex = -2;
-      this.animateNamespaces();
-    },
     animateNamespaces() {
-      if (this.currentNamespaceIndex < this.namespaces.length) {
+      if (this.currentNamespaceIndex < this.user.namespaces.length) {
         setTimeout(this.animateNamespaces, 200);
       }
       this.currentNamespaceIndex++;
+    },
+    toggleAdding() {
+      this.adding = !this.adding;
+    },
+    onNamespaceAdded() {
+      this.adding = false;
+      this.$notify({
+        title: 'Namespace successfully created',
+        type: 'success',
+      });
     },
   },
 };

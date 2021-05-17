@@ -2,8 +2,8 @@
   <div class="welcome">
     <h1>Bem-vind@</h1>
     <p>Bom te ver aqui</p>
-    <form-login class="white-form" onSuccess="logged" v-if="!registerForm"/>
-    <form-register class="white-form" onSuccess="logged" v-else/>
+    <form-login class="white-form" @success="logged" v-if="!registerForm"/>
+    <form-register class="white-form" @success="registered" v-else/>
     <div class="text-center">
       <a href="#" @click="toggleForms" v-if="!registerForm">
         Quero me cadastrar
@@ -54,6 +54,10 @@ export default {
   }),
   methods: {
     logged() {
+      this.$router.push({name: 'Home'});
+    },
+    registered() {
+      this.$router.push({name: 'Home'});
     },
     toggleForms() {
       this.registerForm = !this.registerForm;
