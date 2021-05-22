@@ -1,10 +1,10 @@
 <template>
-  <a :href="`/panels/${name}`">
-    <span>{{name}}</span>
-    <small v-if="cards">{{cards}} cartões</small>
-    <small v-else>Vazio</small>
+  <router-link :to="routerConfig">
+    <span>{{panel.name}}</span>
+    <small v-if="panel.cards.length">{{panel.cards.length}} cards</small>
+    <small v-else>Empty</small>
     <i class="fa fa-arrow-right"></i>
-  </a>
+  </router-link>
 </template>
 
 <style scoped>
@@ -49,6 +49,22 @@
 <script>
 export default {
   name: 'Panel',
-  props: ['name', 'cards'],
+  props: {
+    namespaceSlug: {
+      required: true,
+      type: String,
+    },
+    panel: {
+      required: true,
+      type: Object,
+    },
+  },
+  computed: {
+    routerConfig() {
+      return {
+        path: `/namespaces/${this.namespaceSlug}/panels/${this.panel._id}`,
+      };
+    },
+  },
 };
 </script>

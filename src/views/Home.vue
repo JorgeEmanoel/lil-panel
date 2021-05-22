@@ -1,9 +1,10 @@
 <template>
   <div class="page-container black-page-container">
+    <logout-button />
     <div class="home">
       <h1 v-if="!adding">
         Namespaces
-        <button class="btn" id="add-namespace" @click="toggleAdding">
+        <button class="btn add-resource" @click="toggleAdding">
           <i class="fa fa-plus"></i>
         </button>
       </h1>
@@ -16,8 +17,7 @@
         <namespace
           v-for="(n, i) in user.namespaces"
           :key="n._id"
-          :name="n.name"
-          :panels="n.panels.length"
+          :namespace="n"
           :class="{'shown': i <= currentNamespaceIndex}"
         />
       </div>
@@ -45,23 +45,16 @@
   .namespaces-container {
     width: 25%;
   }
-
-  #add-namespace {
-    position: absolute;
-    width: auto;
-    top: 3px;
-    right: -60px;
-    border-radius: 100%;
-  }
 </style>
 
 <script>
 import {mapGetters} from 'vuex';
 import Namespace from '../components/Namespace.vue';
 import FormNamespace from '@/components/forms/FormNamespace';
+import LogoutButton from '@/components/buttons/LogoutButton';
 
 export default {
-  components: {Namespace, FormNamespace},
+  components: {Namespace, FormNamespace, LogoutButton},
   name: 'Home',
   data: () => ({
     currentNamespaceIndex: -2,

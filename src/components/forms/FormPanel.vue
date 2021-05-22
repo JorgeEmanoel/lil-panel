@@ -21,7 +21,13 @@
 import Panel from '@/services/Panel';
 import {mapGetters, mapMutations} from 'vuex';
 export default {
-  name: 'FormNamespace',
+  name: 'FormPanel',
+  props: {
+    namespaceId: {
+      required: true,
+      type: String,
+    },
+  },
   data: () => ({
     name: '',
     loading: false,
@@ -40,7 +46,7 @@ export default {
     ...mapMutations(['setUser']),
     async submit() {
       this.loading = true;
-      const result = await Panel.store(this.name);
+      const result = await Panel.store(this.name, this.namespaceId);
       this.loading = false;
 
       if (!result.ok) {
@@ -53,6 +59,10 @@ export default {
       this.setUser({
         ...this.user,
         namespaces: result.namespaces,
+      });
+      this.$notify({
+        title: 'Panel successfuly created',
+        type: 'success',
       });
       this.$emit('success');
     },

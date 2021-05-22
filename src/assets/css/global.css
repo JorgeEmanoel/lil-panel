@@ -96,7 +96,6 @@ input, select {
 }
 
 .page-container {
-  width: 100vw;
   min-height: 100vh;
 }
 
@@ -114,4 +113,12 @@ input, select {
 
 .p20 {
   padding: 20px;
+}
+
+.add-resource {
+  position: absolute;
+  width: auto;
+  top: 3px;
+  right: -60px;
+  border-radius: 100%;
 }

@@ -47,4 +47,15 @@ export default {
           e.response.data.message || 'Can not delete this namespace now' :
           '',
       })),
+  bySlug: async (slug) => api.get(`namespaces/${slug}`)
+      .then((r) => ({
+        ok: true,
+        namespace: r.data.namespace,
+      }))
+      .catch((e) => ({
+        ok: false,
+        message: e.response ?
+          e.response.data.message || 'Can not retrieve this namespace now' :
+          '',
+      })),
 };

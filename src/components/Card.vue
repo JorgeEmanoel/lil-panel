@@ -1,6 +1,6 @@
 <template>
   <a
-    :href="`url`"
+    :href="url"
     target="_blank"
     :class="className"
     :style="image && `background-image: url(${image})`"

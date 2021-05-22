@@ -14,7 +14,7 @@ const routes = [
     name: 'Welcome',
     component: Welcome,
     meta: {
-      requiresGuest: false,
+      requiresGuest: true,
     },
   },
   {
@@ -26,12 +26,12 @@ const routes = [
     },
   },
   {
-    path: '/namespaces/:name',
+    path: '/namespaces/:slug',
     name: 'Panels',
     component: Panels,
   },
   {
-    path: '/namespaces/:namespace/panels/:panel',
+    path: '/namespaces/:slug/panels/:panel',
     name: 'Cards',
     component: Cards,
   },

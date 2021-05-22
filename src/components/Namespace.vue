@@ -1,10 +1,12 @@
 <template>
-  <a :href="`/namespaces/${name}`">
-    <span>{{name}}</span>
-    <small v-if="panels">{{panels}} painéis</small>
-    <small v-else>Vazio</small>
+  <router-link :to="routerConfig">
+    <span>{{namespace.name}}</span>
+    <small v-if="namespace.panels.length">
+      {{namespace.panels.length}} panels
+    </small>
+    <small v-else>Empty</small>
     <i class="fa fa-arrow-right"></i>
-  </a>
+  </router-link>
 </template>
 
 <style scoped>
@@ -49,6 +51,18 @@
 <script>
 export default {
   name: 'Namespace',
-  props: ['name', 'panels'],
+  props: {
+    namespace: {
+      required: true,
+      type: Object,
+    },
+  },
+  computed: {
+    routerConfig() {
+      return {
+        path: `/namespaces/${this.namespace.slug}`,
+      };
+    },
+  },
 };
 </script>
