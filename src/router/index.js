@@ -31,7 +31,7 @@ const routes = [
     component: Panels,
   },
   {
-    path: '/namespaces/:slug/panels/:panel',
+    path: '/namespaces/:slug/panels/:panelId',
     name: 'Cards',
     component: Cards,
   },

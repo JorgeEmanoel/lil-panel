@@ -4,9 +4,8 @@
     <back-button routeName="Home" />
     <div class="panels">
       <h1 v-if="!adding">
-        Panels
         <template v-if="namespace">
-          <br> {{namespace.name}}
+          {{namespace.name}}
           <button class="btn add-resource" @click="toggleAdding">
             <i class="fa fa-plus"></i>
           </button>

@@ -1,13 +1,20 @@
 <template>
   <a
-    :href="url"
+    :href="card.url"
     target="_blank"
-    :class="className"
-    :style="image && `background-image: url(${image})`"
+    :style="computedStyle"
   >
     <div class="inner-container">
-      <span>{{name}}</span>
-      <div class="backdrop" v-if="image"></div>
+      <span :style="`color: ${card.textColor}`">{{card.name}}</span>
+      <div class="backdrop" v-if="card.backgroundUrl"></div>
+    </div>
+    <div class="buttons-container">
+      <button @click.prevent="onEdit">
+        <i class="fa fa-edit"></i>
+      </button>
+      <button @click.prevent="onDelete">
+        <i class="fa fa-trash"></i>
+      </button>
     </div>
   </a>
 </template>
@@ -27,24 +34,19 @@
     transition: all .5s;
     position: relative;
     opacity: 0;
-    overflow: hidden;
     font-size: 14px;
     z-index: 1;
   }
 
-  a.text-black span {
-    color: #333;
-    text-shadow: none;
-  }
-
   a .backdrop {
+    border-radius: 10px;
     display: block;
     position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background: rgba(0, 0, 0, .6);
+    width: 102%;
+    height: 102%;
+    left: -1px;
+    top: -1px;
+    background: rgba(0, 0, 0, .8);
     z-index: -1;
   }
 
@@ -67,20 +69,83 @@
     word-break: break-all;
     text-shadow: 0 0 2px #000;
     font-weight: bolder;
-    color: #fff;
+    color: #333;
     z-index: 999;
+  }
+
+  a:hover > .buttons-container {
+    opacity: 1;
+  }
+
+  .buttons-container {
+    opacity: 0;
+    bottom: -35px;
+    padding-top: 20px;
+    position: absolute;
+    transition: all .3s;
+  }
+
+  .buttons-container button {
+    background: none;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    margin: 5px;
+    padding: 5px;
   }
 </style>
 
 <script>
+import Card from '@/services/Card';
 export default {
   name: 'Card',
-  props: ['name', 'url', 'image'],
+  props: {
+    card: {
+      type: Object,
+      required: true,
+    },
+  },
   computed: {
-    className() {
-      return {
-        'text-black': !this.image,
-      };
+    computedStyle() {
+      let style = '';
+
+      if (this.card.backgroundUrl) {
+        style += `background-image: url(${this.card.backgroundUrl});`;
+        style += 'background-color: #999;';
+      }
+
+      if (this.card.backgroundColor && !this.card.backgroundUrl) {
+        style += `background-color: ${this.card.backgroundColor};`;
+      }
+
+      return style;
+    },
+  },
+  methods: {
+    async onDelete() {
+      if (!confirm('Are you sure you want to delete this card?')) {
+        return false;
+      }
+
+      this.deleting = true;
+      const result = await Card.delete(this.card._id);
+      this.deleting = false;
+
+      if (!result.ok) {
+        return this.$notify({
+          title: result.message,
+          type: 'error',
+        });
+      }
+
+      this.$notify({
+        title: 'Card deleted',
+        type: 'success',
+      });
+      this.$emit('deleted');
+    },
+    onEdit() {
+      this.$emit('edit', {card: this.card});
     },
   },
 };

@@ -3,18 +3,31 @@
     <logout-button />
     <back-button />
     <div class="cards">
-      <h1>{{panel.name}}</h1>
+      <h1 v-if="panel">{{panel.name}}</h1>
 
-      <div class="cards-container">
+      <i class="fa fa-loading fa-2x" v-if="loading"></i>
+      <div class="cards-container" v-if="!loading && panel && !adding">
         <card
-          v-for="(n, i) in cards"
-          :key="n._id"
-          :name="n.name"
-          :url="n.url"
-          :image="n.image"
+          v-for="(c, i) in panel.cards"
+          :key="c._id"
+          :card="c"
           :class="{'shown': i <= currentCardIndex}"
+          @deleted="getPanel"
+          @edit="onEdit"
         />
+        <add-card-button @click.native="toggleAdding" />
       </div>
+      <form-card
+        v-if="adding && panel"
+        :panelId="panel._id"
+        :card="currentCard"
+        @created="onCardCreated"
+        @updated="onCardUpdated"
+      >
+        <button class="btn btn-success" @click="toggleAdding">
+          Cancel
+        </button>
+      </form-card>
     </div>
   </div>
 </template>
@@ -45,63 +58,65 @@
 <script>
 import BackButton from '../components/buttons/BackButton.vue';
 import LogoutButton from '../components/buttons/LogoutButton.vue';
+import AddCardButton from '../components/buttons/AddCardButton.vue';
 import Card from '../components/Card.vue';
+import FormCard from '../components/forms/FormCard.vue';
+import Panel from '@/services/Panel';
 
 export default {
-  components: {Card, BackButton, LogoutButton},
+  components: {Card, BackButton, LogoutButton, FormCard, AddCardButton},
   name: 'Cards',
   data: () => ({
     currentCardIndex: -2,
-    panel: {
-      name: 'Page under construction',
-    },
-    cards: [
-      {
-        _id: '1',
-        name: 'Site Pessoal',
-        url: 'https://jorgeemanoel.com',
-        image: 'https://instagram.fpnz4-1.fna.fbcdn.net/v/t51.2885-19/s150x150/122464254_1060945517679724_545166778978363576_n.jpg?tp=1&_nc_ht=instagram.fpnz4-1.fna.fbcdn.net&_nc_ohc=H9On_r52hDAAX8ZDa7_&edm=ABfd0MgBAAAA&ccb=7-4&oh=88143b7f61a67ffd5212d4ec31821231&oe=60AEE660&_nc_sid=7bff83',
-      },
-      {
-        _id: '2',
-        name: 'Google',
-        image: 'http://s2.glbimg.com/z_gIOSUdsxyNGClgVLYVBHBziyw=/0x0:400x400/400x400/s.glbimg.com/po/tt2/f/original/2016/05/20/new-google-favicon-logo.png',
-        url: 'https://google.com',
-      },
-      {
-        _id: '3',
-        name: 'Trello',
-        image: 'https://trello.com/favicon.ico',
-        url: 'https://trello.com/',
-      },
-      {
-        _id: '4',
-        name: 'Gitlab',
-        image: 'https://gilab.com/favicon.ico',
-        url: 'https://gilab.com/',
-      },
-      {
-        _id: '5',
-        name: 'Github',
-        image: 'https://github.com/favicon.ico',
-        url: 'https://github.com/',
-      },
-    ],
+    panel: null,
+    currentCard: null,
+    loading: false,
+    adding: false,
   }),
   mounted() {
-    this.getPanels();
+    this.getPanel();
   },
   methods: {
-    getPanels() {
-      // ...
+    async getPanel() {
+      this.loading = true;
+      const result = await Panel.find(this.$route.params.panelId);
+      this.loading = false;
+
+      if (!result.ok) {
+        return this.$notify({
+          title: result.message,
+          type: 'error',
+        });
+      }
+
+      this.panel = result.panel;
+
       this.currentCardIndex = -2;
-      this.animatePanels();
+      this.animateCards();
     },
-    animatePanels() {
-      if (this.currentCardIndex < this.cards.length) {
-        setTimeout(this.animatePanels, 200);
+    animateCards() {
+      if (this.currentCardIndex < this.panel.cards.length) {
+        setTimeout(this.animateCards, 200);
       }
       this.currentCardIndex++;
+    },
+    toggleAdding() {
+      this.adding = !this.adding;
+      if (!this.adding) {
+        this.currentCard = null;
+      }
+    },
+    onCardCreated() {
+      this.toggleAdding();
+      this.getPanel();
+    },
+    onCardUpdated() {
+      this.toggleAdding();
+      this.getPanel();
+    },
+    onEdit(event) {
+      this.currentCard = event.card;
+      this.adding = true;
     },
   },
 };
