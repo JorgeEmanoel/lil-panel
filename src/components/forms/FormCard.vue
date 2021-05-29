@@ -53,7 +53,7 @@
 
 <script>
 import Card from '@/services/Card';
-import {mapGetters, mapMutations} from 'vuex';
+import {mapMutations} from 'vuex';
 export default {
   name: 'FormCard',
   props: {
@@ -89,9 +89,6 @@ export default {
       this.data = this.card;
     }
   },
-  computed: {
-    ...mapGetters({user: 'getUser'}),
-  },
   methods: {
     ...mapMutations(['setUser']),
     async submit() {
@@ -101,22 +98,16 @@ export default {
         await Card.store(this.data, this.panelId);
       this.loading = false;
 
+      this.$notify({
+        title: result.message,
+        type: result.ok ? 'success' : 'error',
+      });
+
       if (!result.ok) {
-        return this.$notify({
-          title: result.message,
-          type: 'error',
-        });
+        return false;
       }
 
-      this.setUser({
-        ...this.user,
-        namespaces: result.namespaces,
-      });
-      this.$notify({
-        title: 'Card successfuly ' + (this.card ? 'updated' : 'created'),
-        type: 'success',
-      });
-
+      this.setUser({namespaces: result.namespaces});
       this.$emit(this.card ? 'updated' : 'created');
     },
   },

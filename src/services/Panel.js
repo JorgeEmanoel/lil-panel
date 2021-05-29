@@ -9,6 +9,7 @@ export default {
         })
         .then((r) => ({
           ok: true,
+          message: r.data.message,
           namespaces: r.data.namespaces,
         }))
         .catch((e) => ({

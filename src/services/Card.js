@@ -17,6 +17,7 @@ export default {
         .then((r) => ({
           ok: true,
           namespaces: r.data.namespaces,
+          message: r.data.message,
         }))
         .catch((e) => ({
           ok: false,
@@ -33,6 +34,7 @@ export default {
         .then((r) => ({
           ok: true,
           message: r.data.message,
+          namespaces: r.data.namespaces,
         }))
         .catch((e) => ({
           ok: false,
@@ -46,6 +48,7 @@ export default {
         .then((r) => ({
           ok: true,
           message: r.data.message,
+          namespaces: r.data.namespaces,
         }))
         .catch((e) => ({
           ok: false,
