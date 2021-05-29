@@ -84,6 +84,7 @@ export default {
     },
     onNamespaceRecorded() {
       this.adding = false;
+      this.currentNamespace = null;
     },
     onEdit(event) {
       this.currentNamespace = event.namespace;
