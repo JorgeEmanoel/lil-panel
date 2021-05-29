@@ -30,7 +30,6 @@
     text-decoration: none;
     border: 1px dashed #333;
     border-radius: 10px;
-    margin: 10px;
     transition: all .5s;
     position: relative;
     opacity: 0;

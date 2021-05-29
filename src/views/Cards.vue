@@ -8,10 +8,10 @@
       <i class="fa fa-loading fa-2x" v-if="loading"></i>
       <div class="cards-container" v-if="!loading && panel && !adding">
         <card
-          v-for="(c, i) in panel.cards"
+          v-for="c in panel.cards"
           :key="c._id"
           :card="c"
-          :class="{'shown': i <= currentCardIndex}"
+          class="shown"
           @deleted="getPanel"
           @edit="onEdit"
         />
@@ -49,9 +49,18 @@
   }
 
   .cards-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    row-gap: 15px;
+    column-gap: 15px;
+    transition: all .3s;
+  }
+
+  @media screen and (max-width: 800px) {
+    .cards-container {
+      margin-top: 100px;
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 </style>
 

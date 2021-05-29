@@ -15,7 +15,6 @@
     height: 95px;
     border: 1px dashed #fff;
     border-radius: 10px;
-    margin: 10px;
     transition: all .5s;
     position: relative;
     overflow: hidden;
