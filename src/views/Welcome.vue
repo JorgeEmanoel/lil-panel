@@ -8,7 +8,7 @@
       <a href="#" @click="toggleForms" v-if="!registerForm">
         Sign up
       </a>
-      <a href="#" @click="toggleForms" v-else>Already have an account?</a>
+      <a href="#" @click="toggleForms" v-else>I already have an account</a>
     </div>
   </div>
 </template>
