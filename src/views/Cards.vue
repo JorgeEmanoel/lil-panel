@@ -51,8 +51,8 @@
   .cards-container {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    row-gap: 15px;
-    column-gap: 15px;
+    row-gap: 30px;
+    column-gap: 30px;
     transition: all .3s;
   }
 
