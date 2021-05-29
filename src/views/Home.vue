@@ -8,7 +8,11 @@
           <i class="fa fa-plus"></i>
         </button>
       </h1>
-      <form-namespace v-if="adding" @success="onNamespaceAdded">
+      <form-namespace
+        v-if="adding"
+        :namespace="currentNamespace"
+        @success="onNamespaceRecorded"
+      >
         <button class="btn btn-success" @click="toggleAdding">
           Cancel
         </button>
@@ -19,6 +23,7 @@
           :key="n._id"
           :namespace="n"
           :class="{'shown': i <= currentNamespaceIndex}"
+          @edit="onEdit"
         />
       </div>
     </div>
@@ -59,6 +64,7 @@ export default {
   data: () => ({
     currentNamespaceIndex: -2,
     adding: false,
+    currentNamespace: null,
   }),
   mounted() {
     this.animateNamespaces();
@@ -76,12 +82,12 @@ export default {
     toggleAdding() {
       this.adding = !this.adding;
     },
-    onNamespaceAdded() {
+    onNamespaceRecorded() {
       this.adding = false;
-      this.$notify({
-        title: 'Namespace successfully created',
-        type: 'success',
-      });
+    },
+    onEdit(event) {
+      this.currentNamespace = event.namespace;
+      this.toggleAdding();
     },
   },
 };

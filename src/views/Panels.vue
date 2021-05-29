@@ -14,7 +14,8 @@
       <form-panel
         v-if="adding && namespace"
         :namespaceId="namespace._id"
-        @success="onPanelAdded"
+        :panel="currentPanel"
+        @success="onPanelRecorded"
       >
         <button class="btn btn-success" @click="toggleAdding">
           Cancel
@@ -31,6 +32,8 @@
             :panel="p"
             :namespaceSlug="namespace.slug"
             :class="{'shown': i <= currentPanelIndex}"
+            @deleted="getNamespace"
+            @edit="onEdit"
           />
         </template>
       </div>
@@ -75,6 +78,7 @@ export default {
     namespace: null,
     loading: false,
     adding: false,
+    currentPanel: null,
   }),
   mounted() {
     this.getNamespace();
@@ -105,9 +109,14 @@ export default {
       }
       this.currentPanelIndex++;
     },
-    onPanelAdded() {
+    onPanelRecorded() {
       this.adding = false;
+      this.currentPanel = null;
       this.getNamespace();
+    },
+    onEdit(event) {
+      this.currentPanel = event.panel;
+      this.toggleAdding();
     },
   },
 };

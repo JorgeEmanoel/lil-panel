@@ -23,13 +23,13 @@ import {mapMutations} from 'vuex';
 export default {
   name: 'LogoutButton',
   methods: {
-    ...mapMutations(['setUser']),
+    ...mapMutations(['freeUser']),
     logout() {
       if (!confirm('Are you sure you want to logout?')) {
         return false;
       }
 
-      this.setUser(null);
+      this.freeUser();
       this.$router.push({path: '/'});
     },
   },

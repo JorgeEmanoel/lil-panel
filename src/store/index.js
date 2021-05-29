@@ -10,7 +10,10 @@ export default new Vuex.Store({
   },
   mutations: {
     setUser(state, payload) {
-      state.user = payload;
+      state.user = {...state.user, ...payload};
+    },
+    freeUser(state, _payload) {
+      state.user = null;
     },
   },
   getters: {
@@ -18,9 +21,7 @@ export default new Vuex.Store({
       return state.user;
     },
   },
-  actions: {
-  },
-  modules: {
-  },
+  actions: {},
+  modules: {},
   plugins: [createPersistedState()],
 });

@@ -29,11 +29,17 @@ const routes = [
     path: '/namespaces/:slug',
     name: 'Panels',
     component: Panels,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: '/namespaces/:slug/panels/:panelId',
     name: 'Cards',
     component: Cards,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 

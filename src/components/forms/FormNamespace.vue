@@ -2,17 +2,7 @@
   <form action="#" @submit.prevent="submit">
     <div class="form-group">
       <label for="f-namespace-username">Name:</label>
-      <input type="text" id="f-namespace-username" v-model="name" required>
-    </div>
-    <div class="form-group">
-      <label for="f-namespace-visibility">
-        Make public
-      </label>
-      <input
-        type="checkbox"
-        id="f-namespace-visibility"
-        v-model="isPublic"
-      >
+      <input type="text" id="f-namespace-username" v-model="data.name" required>
     </div>
     <div class="divider"></div>
     <div class="form-group">
@@ -38,45 +28,51 @@
 
 <script>
 import Namespace from '@/services/Namespace';
-import {mapGetters, mapMutations} from 'vuex';
+import {mapMutations} from 'vuex';
 export default {
   name: 'FormNamespace',
+  props: {
+    namespace: {
+      type: Object,
+      required: false,
+    },
+  },
   data: () => ({
-    name: '',
-    isPublic: false,
+    data: {
+      name: '',
+      isPublic: false,
+    },
     loading: false,
   }),
   mounted() {
-    this.name = '';
-    this.isPublic = false;
+    this.data = {
+      name: '',
+      loading: false,
+    };
 
     if (this.namespace) {
-      this.name = this.namespace.name;
-      this.isPublic = this.namespace.isPublic;
+      this.data = this.namespace;
     }
-  },
-  computed: {
-    ...mapGetters({user: 'getUser'}),
   },
   methods: {
     ...mapMutations(['setUser']),
     async submit() {
       this.loading = true;
-      const result = await Namespace.store(
-          this.name,
-          this.isPublic ? 'public' : 'private',
-      );
+      const result = this.namespace ?
+        await Namespace.update(this.namespace._id, this.data.name) :
+        await Namespace.store(this.data.name);
       this.loading = false;
 
+      this.$notify({
+        title: result.message,
+        type: result.ok ? 'success' : 'error',
+      });
+
       if (!result.ok) {
-        return this.$notify({
-          title: result.message,
-          type: 'error',
-        });
+        return false;
       }
 
       this.setUser({
-        ...this.user,
         namespaces: result.namespaces,
       });
       this.$emit('success');
